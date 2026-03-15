@@ -1,0 +1,881 @@
+<div id="RareBeautyCommunity-{{ section.id }}" class="rb-community-wrapper">
+  {% if section.settings.top_heading != blank %}
+    <div class="rb-top-heading-wrapper">
+      <h2 class="rb-top-heading">{{ section.settings.top_heading }}</h2>
+    </div>
+  {% endif %}
+
+  <div class="rb-community-container">
+    <div class="rb-content-side">
+      <h2 class="rb-main-heading">
+        {% if section.settings.heading_part_1 != blank %}
+          {{ section.settings.heading_part_1 }}
+        {% endif %}
+        {% if section.settings.heading_script != blank %}
+          <span class="rb-script-text">{{ section.settings.heading_script }}</span>
+        {% endif %}
+        {% if section.settings.heading_part_2 != blank %}
+          <br>
+          {{ section.settings.heading_part_2 }}
+        {% endif %}
+      </h2>
+
+      {% if section.settings.sub_text != blank %}
+        <div class="rb-subtext">{{ section.settings.sub_text }}</div>
+      {% endif %}
+
+      {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+        <a href="{{ section.settings.button_link }}" class="rb-link">{{ section.settings.button_text }}</a>
+      {% endif %}
+    </div>
+
+    <div class="rb-gallery-side">
+      <div class="rb-scroll-track" id="rb-track-{{ section.id }}">
+        <div class="rb-track-half">
+          {% for block in section.blocks %}
+            <div
+              class="rb-gallery-item rb-size-{{ block.settings.size }} {% if section.settings.shadow_toggle %}rb-has-shadow{% endif %}"
+              data-index="{{ forloop.index0 }}"
+              data-image="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1000 }}{% endif %}"
+              data-username="{{ block.settings.username | escape }}"
+              data-description="{{ block.settings.description | escape }}"
+              data-link="{{ block.settings.link }}"
+              {{ block.shopify_attributes }}
+            >
+              {% if block.settings.image %}
+                <img
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  alt="{{ block.settings.username | escape }}"
+                  loading="lazy"
+                  class="rb-item-image"
+                >
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'rb-placeholder rb-item-image' }}
+              {% endif %}
+              {% if block.settings.username != blank %}
+                <div class="rb-item-overlay">
+                  <span class="rb-item-username">{{ block.settings.username }}</span>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="rb-track-half" aria-hidden="true">
+          {% for block in section.blocks %}
+            <div
+              class="rb-gallery-item rb-size-{{ block.settings.size }} {% if section.settings.shadow_toggle %}rb-has-shadow{% endif %}"
+              data-index="{{ forloop.index0 }}"
+              data-image="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1000 }}{% endif %}"
+              data-username="{{ block.settings.username | escape }}"
+              data-description="{{ block.settings.description | escape }}"
+              data-link="{{ block.settings.link }}"
+            >
+              {% if block.settings.image %}
+                <img
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  alt="{{ block.settings.username | escape }}"
+                  loading="lazy"
+                  class="rb-item-image"
+                >
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'rb-placeholder rb-item-image' }}
+              {% endif %}
+              {% if block.settings.username != blank %}
+                <div class="rb-item-overlay">
+                  <span class="rb-item-username">{{ block.settings.username }}</span>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if section.settings.enable_modal %}
+    <div class="rb-modal-overlay" id="rb-modal-{{ section.id }}">
+      <div class="rb-modal-content">
+        <div class="rb-modal-header">
+          <div class="rb-modal-nav">
+            <button class="rb-nav-btn rb-prev-btn">&lt; PREVIOUS</button>
+            <button class="rb-nav-btn rb-next-btn">NEXT &gt;</button>
+          </div>
+          <button class="rb-close-btn">&times;</button>
+        </div>
+        <div class="rb-modal-body">
+          <div class="rb-modal-image-col">
+            <img src="" alt="" class="rb-modal-image" id="rb-modal-img-{{ section.id }}">
+          </div>
+          <div class="rb-modal-info-col">
+            <h3 class="rb-modal-username" id="rb-modal-user-{{ section.id }}"></h3>
+            <div class="rb-modal-description" id="rb-modal-desc-{{ section.id }}"></div>
+            <a href="" class="rb-modal-link" id="rb-modal-link-{{ section.id }}" style="display:none;">MORE</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;500&display=swap');
+
+  #RareBeautyCommunity-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    overflow: hidden;
+    position: relative;
+    padding: 60px 0;
+    font-family: inherit;
+  }
+
+  .rb-top-heading-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+    padding-bottom: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .rb-top-heading-wrapper {
+      text-align: left;
+      padding-left: calc(5vw + 300px);
+    }
+  }
+
+  .rb-top-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .rb-community-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  @media(min-width: 768px) {
+    .rb-community-container {
+      flex-direction: row;
+      align-items: stretch;
+      min-height: 500px;
+    }
+  }
+
+  .rb-content-side {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  @media(min-width: 768px) {
+    .rb-content-side {
+      flex: 0 0 20%;
+      text-align: left;
+      padding-left: 5vw;
+    }
+  }
+
+  .rb-main-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    margin: 0 0 15px 0;
+    line-height: 1.1;
+    font-weight: 400;
+  }
+
+  .rb-script-text {
+    font-family: 'Caveat', 'Brush Script MT', cursive;
+    font-style: italic;
+    font-size: 1.25em;
+    font-weight: 500;
+  }
+
+  .rb-subtext {
+    font-family: sans-serif;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    opacity: 0.8;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media(min-width: 768px) {
+    .rb-subtext {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .rb-link {
+    font-family: sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid currentColor;
+    display: inline-block;
+    align-self: center;
+    padding-bottom: 3px;
+    transition: opacity 0.3s ease;
+  }
+
+  .rb-link:hover {
+    opacity: 0.7;
+  }
+
+  @media(min-width: 768px) {
+    .rb-link {
+      align-self: flex-start;
+    }
+  }
+
+  .rb-gallery-side {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .rb-gallery-side.rb-grabbing {
+    cursor: grabbing;
+  }
+
+  .rb-scroll-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .rb-track-half {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.gap }}px;
+    padding-right: {{ section.settings.gap }}px; /* Ensures seamless loop gap */
+  }
+
+  .rb-gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ section.settings.image_radius }}px;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    flex-shrink: 0;
+  }
+
+  {% if section.settings.enable_hover_zoom %}
+  .rb-gallery-item:hover {
+    transform: scale(1.03);
+    z-index: 10;
+  }
+  {% endif %}
+
+  .rb-has-shadow {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+
+  /* Scattering Logic */
+  .rb-gallery-item:nth-child(3n+1) { align-self: flex-start; margin-top: -40px; }
+  .rb-gallery-item:nth-child(3n+2) { align-self: center; }
+  .rb-gallery-item:nth-child(3n+3) { align-self: flex-end; margin-bottom: -40px; }
+
+  /* Sizes */
+  .rb-size-small { width: 160px; height: 200px; }
+  .rb-size-medium { width: 220px; height: 280px; }
+  .rb-size-large { width: 280px; height: 360px; }
+
+  @media(min-width: 768px) {
+    .rb-gallery-item:nth-child(3n+1) { margin-top: -80px; }
+    .rb-gallery-item:nth-child(3n+3) { margin-bottom: -80px; }
+    .rb-size-small { width: 200px; height: 250px; }
+    .rb-size-medium { width: 280px; height: 350px; }
+    .rb-size-large { width: 350px; height: 450px; }
+  }
+
+  .rb-item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none; /* Prevents native image drag */
+  }
+
+  .rb-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #e0e0e0;
+    fill: #a0a0a0;
+  }
+
+  .rb-item-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .rb-gallery-item:hover .rb-item-overlay {
+    opacity: 1;
+  }
+
+  /* Modal Styles */
+  .rb-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .rb-modal-overlay.rb-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .rb-modal-content {
+    background: {{ section.settings.modal_bg }};
+    color: {{ section.settings.modal_text_color }};
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .rb-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .rb-modal-nav {
+    display: flex;
+    gap: 20px;
+  }
+
+  .rb-nav-btn {
+    background: none;
+    border: none;
+    font-family: sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .rb-nav-btn:hover {
+    opacity: 1;
+  }
+
+  .rb-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    color: inherit;
+    opacity: 0.6;
+  }
+
+  .rb-close-btn:hover {
+    opacity: 1;
+  }
+
+  .rb-modal-body {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  @media(min-width: 768px) {
+    .rb-modal-body {
+      flex-direction: row;
+      height: 500px;
+      overflow: hidden;
+    }
+  }
+
+  .rb-modal-image-col {
+    flex: 1;
+    background: #f5f5f5;
+  }
+
+  .rb-modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    max-height: 50vh;
+  }
+
+  @media(min-width: 768px) {
+    .rb-modal-image {
+      max-height: none;
+      object-fit: cover;
+    }
+  }
+
+  .rb-modal-info-col {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    overflow: hidden;
+  }
+
+  .rb-modal-info-col {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    overflow: hidden;
+  }
+
+  .rb-modal-description {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 100%;
+    padding-right: 10px;
+  }
+
+  .rb-modal-username {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .rb-modal-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .rb-modal-link {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    align-self: flex-start;
+  }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sectionId = "{{ section.id }}";
+      const wrapper = document.getElementById(`RareBeautyCommunity-${sectionId}`);
+      if (!wrapper) return;
+  
+      // --- Drag & Scroll Logic ---
+      const track = wrapper.querySelector('.rb-scroll-track');
+      const trackContainer = wrapper.querySelector('.rb-gallery-side');
+      const trackHalf = wrapper.querySelector('.rb-track-half');
+      
+      // Adjusted speed calculation
+      let baseSpeed = {{ section.settings.animation_speed }};
+      let speed = baseSpeed / 50; 
+      let isAutoScroll = {{ section.settings.enable_auto_scroll | json }};
+      
+      let isDragging = false;
+      let isClick = true;
+      let startX = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
+      let animationId;
+      let trackWidth = 0;
+  
+      function initTrackWidth() {
+        // Calculate the width of one half including its gap
+        trackWidth = trackHalf.offsetWidth;
+      }
+      
+      // Wait for images to load to get correct width, but also calc immediately
+      initTrackWidth();
+      setTimeout(initTrackWidth, 500); 
+      window.addEventListener('resize', initTrackWidth);
+  
+      function autoScroll() {
+        if (!isDragging && isAutoScroll && trackWidth > 0) {
+          currentTranslate -= speed;
+          // Infinite loop logic
+          if (currentTranslate <= -trackWidth) {
+            currentTranslate += trackWidth;
+          } else if (currentTranslate > 0) {
+            currentTranslate -= trackWidth;
+          }
+          track.style.transform = `translateX(${currentTranslate}px)`;
+        }
+        animationId = requestAnimationFrame(autoScroll);
+      }
+  
+      if (isAutoScroll) {
+        autoScroll();
+      }
+  
+      // Mouse Events for Dragging
+      trackContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        isClick = true;
+        startX = e.pageX;
+        prevTranslate = currentTranslate;
+        trackContainer.classList.add('rb-grabbing');
+        if (isAutoScroll) cancelAnimationFrame(animationId);
+      });
+  
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const diff = e.pageX - startX;
+        if (Math.abs(diff) > 5) isClick = false; // Threshold to distinguish click from drag
+        
+        currentTranslate = prevTranslate + diff;
+        
+        // Infinite loop logic while dragging
+        if (currentTranslate <= -trackWidth) {
+          currentTranslate += trackWidth;
+          startX = e.pageX;
+          prevTranslate = currentTranslate;
+        } else if (currentTranslate > 0) {
+          currentTranslate -= trackWidth;
+          startX = e.pageX;
+          prevTranslate = currentTranslate;
+        }
+        
+        track.style.transform = `translateX(${currentTranslate}px)`;
+      });
+  
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        trackContainer.classList.remove('rb-grabbing');
+        if (isAutoScroll) autoScroll();
+      });
+  
+      // Pause auto-scroll on hover (if setting enabled and not dragging)
+      {% if section.settings.enable_hover_zoom and section.settings.enable_auto_scroll %}
+        trackContainer.addEventListener('mouseenter', () => {
+          if (!isDragging) cancelAnimationFrame(animationId);
+        });
+        trackContainer.addEventListener('mouseleave', () => {
+          if (!isDragging) autoScroll();
+        });
+      {% endif %}
+  
+  
+      // --- Modal Logic ---
+      {% if section.settings.enable_modal %}
+        const modal = document.getElementById(`rb-modal-${sectionId}`);
+        const modalImg = document.getElementById(`rb-modal-img-${sectionId}`);
+        const modalUser = document.getElementById(`rb-modal-user-${sectionId}`);
+        const modalDesc = document.getElementById(`rb-modal-desc-${sectionId}`);
+        const modalLink = document.getElementById(`rb-modal-link-${sectionId}`);
+        
+        const closeBtn = modal.querySelector('.rb-close-btn');
+        const prevBtn = modal.querySelector('.rb-prev-btn');
+        const nextBtn = modal.querySelector('.rb-next-btn');
+  
+        // Unique items for modal navigation
+        const items = Array.from(trackHalf.querySelectorAll('.rb-gallery-item'));
+        let currentIndex = 0;
+  
+        function openModal(index) {
+          if (index < 0) index = items.length - 1;
+          if (index >= items.length) index = 0;
+          
+          currentIndex = index;
+          const item = items[currentIndex];
+          
+          modalImg.src = item.getAttribute('data-image') || '';
+          modalUser.textContent = item.getAttribute('data-username') || '';
+          modalDesc.innerHTML = item.getAttribute('data-description') || '';
+          
+          const link = item.getAttribute('data-link');
+          if (link) {
+            modalLink.href = link;
+            modalLink.style.display = 'inline-block';
+          } else {
+            modalLink.style.display = 'none';
+          }
+  
+          modal.classList.add('rb-active');
+          document.body.style.overflow = 'hidden';
+        }
+  
+        function closeModal() {
+          modal.classList.remove('rb-active');
+          document.body.style.overflow = '';
+          setTimeout(() => { modalImg.src = ''; }, 300);
+        }
+  
+        // Attach click events to ALL items
+        const allItems = wrapper.querySelectorAll('.rb-gallery-item');
+        allItems.forEach(item => {
+          item.addEventListener('click', function(e) {
+            if (!isClick) {
+              e.preventDefault();
+              return; // Was dragging, do not open modal
+            }
+            const index = parseInt(this.getAttribute('data-index'));
+            openModal(index);
+          });
+        });
+  
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+        prevBtn.addEventListener('click', () => openModal(currentIndex - 1));
+        nextBtn.addEventListener('click', () => openModal(currentIndex + 1));
+  
+        document.addEventListener('keydown', function(e) {
+          if (!modal.classList.contains('rb-active')) return;
+          if (e.key === 'Escape') closeModal();
+          if (e.key === 'ArrowLeft') openModal(currentIndex - 1);
+          if (e.key === 'ArrowRight') openModal(currentIndex + 1);
+        });
+      {% endif %}
+    });
+</script>
+
+{% schema %}
+{
+  "name": "Community Gallery",
+  "settings": [
+    {
+      "type": "text",
+      "id": "top_heading",
+      "label": "Top Heading",
+      "default": "@RareBeauty"
+    },
+    {
+      "type": "header",
+      "content": "Main Typography"
+    },
+    {
+      "type": "text",
+      "id": "heading_part_1",
+      "label": "Heading Part 1 (Regular)",
+      "default": "This is"
+    },
+    {
+      "type": "text",
+      "id": "heading_script",
+      "label": "Heading Script Text",
+      "default": "Your"
+    },
+    {
+      "type": "text",
+      "id": "heading_part_2",
+      "label": "Heading Part 2 (Regular)",
+      "default": "Community"
+    },
+    {
+      "type": "textarea",
+      "id": "sub_text",
+      "label": "Sub Text",
+      "default": "Share your #RareRoutine and tag @rarebeauty for a chance to be featured!"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#faf8f5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Section Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Animation & Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_auto_scroll",
+      "label": "Enable Auto Scroll",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "s",
+      "label": "Scroll Speed",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between images",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Image Border Radius",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "shadow_toggle",
+      "label": "Enable Image Shadow",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_zoom",
+      "label": "Enable Hover Zoom",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Modal Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_modal",
+      "label": "Enable Modal Popup",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "modal_bg",
+      "label": "Modal Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "modal_text_color",
+      "label": "Modal Text Color",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "username",
+          "label": "Username",
+          "default": "@username"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Tell us about this look.</p>"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Optional Link inside Modal"
+        },
+        {
+          "type": "select",
+          "id": "size",
+          "label": "Image Size",
+          "options": [
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "large",
+              "label": "Large"
+            }
+          ],
+          "default": "medium"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Community Gallery",
+      "blocks": [
+        { "type": "image", "settings": { "size": "medium" } },
+        { "type": "image", "settings": { "size": "large" } },
+        { "type": "image", "settings": { "size": "small" } },
+        { "type": "image", "settings": { "size": "medium" } },
+        { "type": "image", "settings": { "size": "large" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
